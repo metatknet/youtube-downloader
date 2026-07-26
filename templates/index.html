@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Downloader - Professional</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">
+                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="40" height="40" rx="8" fill="#FF0000"/>
+                        <path d="M15 12H25C26.1046 12 27 12.8954 27 14V26C27 27.1046 26.1046 28 25 28H15C13.8954 28 13 27.1046 13 26V14C13 12.8954 13.8954 12 15 12Z" fill="white"/>
+                        <polygon points="18,16 18,26 24,21" fill="#FF0000"/>
+                    </svg>
+                    <span class="logo-text">YouTube Downloader</span>
+                </div>
+                <div class="nav-stats">
+                    <span class="stat-badge">
+                        <span class="stat-icon">📊</span>
+                        <span id="totalDownloads">0</span> Downloads
+                    </span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>Download YouTube Videos</h1>
+                <p class="header-subtitle">Fast, Professional, and Easy to Use</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <!-- URL Input Section -->
+            <section class="input-section">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="urlInput" 
+                            class="url-input" 
+                            placeholder="Paste YouTube URL here..."
+                            autocomplete="off"
+                        >
+                        <button id="fetchBtn" class="btn btn-primary">
+                            <span class="btn-icon">🔍</span>
+                            <span class="btn-text">Fetch Video</span>
+                        </button>
+                    </div>
+                    <p class="helper-text">Supports: youtube.com, youtu.be, youtube.com/shorts</p>
+                </div>
+            </section>
+
+            <!-- Alert Messages -->
+            <div id="alertContainer"></div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state hidden">
+                <div class="spinner"></div>
+                <p>Fetching video information...</p>
+            </div>
+
+            <!-- Video Information Section -->
+            <section id="videoSection" class="video-section hidden">
+                <div class="video-card">
+                    <!-- Video Thumbnail and Info -->
+                    <div class="video-header">
+                        <div class="thumbnail-wrapper">
+                            <img id="videoThumbnail" src="" alt="Video thumbnail" class="video-thumbnail">
+                            <div class="duration-badge" id="duration"></div>
+                        </div>
+                        <div class="video-info">
+                            <h2 id="videoTitle" class="video-title"></h2>
+                            <div class="metadata">
+                                <div class="meta-item">
+                                    <span class="meta-icon">👤</span>
+                                    <span id="videoChannel"></span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-icon">👁️</span>
+                                    <span id="videoViews"></span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-icon">📅</span>
+                                    <span id="videoDate"></span>
+                                </div>
+                            </div>
+                            <p id="videoDescription" class="video-description"></p>
+                        </div>
+                    </div>
+
+                    <!-- Format Selection -->
+                    <div class="formats-container">
+                        <!-- Audio Formats -->
+                        <div class="format-group">
+                            <h3 class="format-title">🎵 Audio Formats</h3>
+                            <div id="audioFormats" class="formats-grid"></div>
+                        </div>
+
+                        <!-- Video Formats -->
+                        <div class="format-group">
+                            <h3 class="format-title">🎬 Video Formats</h3>
+                            <div id="videoFormats" class="formats-grid"></div>
+                        </div>
+                    </div>
+
+                    <!-- Download Button -->
+                    <div class="action-buttons">
+                        <button id="downloadBtn" class="btn btn-success btn-large">
+                            <span class="btn-icon">⬇️</span>
+                            <span class="btn-text">Download Selected</span>
+                        </button>
+                        <button id="resetBtn" class="btn btn-secondary">Reset</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Download Progress Section -->
+            <section id="downloadSection" class="download-section hidden">
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <h3>Download Progress</h3>
+                        <div class="progress-info">
+                            <span id="progressPercent" class="progress-percent">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Download Stats -->
+                    <div class="download-stats">
+                        <div class="stat">
+                            <span class="stat-label">Speed:</span>
+                            <span id="downloadSpeed" class="stat-value">-</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">ETA:</span>
+                            <span id="downloadEta" class="stat-value">-</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Downloaded:</span>
+                            <span id="downloadedSize" class="stat-value">0 MB</span>
+                        </div>
+                    </div>
+
+                    <!-- Status Message -->
+                    <p id="downloadStatus" class="download-status">Initializing download...</p>
+
+                    <!-- Cancel Button -->
+                    <button id="cancelBtn" class="btn btn-secondary">Cancel Download</button>
+                </div>
+            </section>
+
+            <!-- Success Message -->
+            <section id="successSection" class="success-section hidden">
+                <div class="success-card">
+                    <div class="success-icon">✓</div>
+                    <h3>Download Complete!</h3>
+                    <p id="successMessage"></p>
+                    <button id="newDownloadBtn" class="btn btn-primary">Download Another Video</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>⚠️ <strong>Disclaimer:</strong> This tool is for personal use only. Respect copyright and intellectual property rights.</p>
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
